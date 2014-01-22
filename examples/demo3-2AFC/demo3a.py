@@ -44,19 +44,14 @@ VOFFSET = 100
 screen = initialize_kelpy( dimensions=(800,600) )
 
 ##############################################
-## This line fetches the size of the screen (the one we just created) and assigns 
-## the values to some constants that we can refer to later.
-WINDOW_WIDTH, WINDOW_HEIGHT = screen.get_size()
-
-##############################################
-## These lines set up a spot to hide things offscreen. When we want to not diplay something, we will
+## These lines set up a spot to hide things off screen. When we want to not diplay something, we will
 ## move it to these spots, off the screen.
-OFF_LEFT = (-300, WINDOW_HEIGHT/2)
-OFF_RIGHT = (1100, WINDOW_HEIGHT/2)
+OFF_LEFT = (-300, screen.get_height()/2)
+OFF_RIGHT = (1100, screen.get_height()/2)
 
 ## Also when we want to display something on screen, they will be sent to these points.
-ON_LEFT = (WINDOW_WIDTH/2-HOFFSET, WINDOW_HEIGHT/2)
-ON_RIGHT = (WINDOW_WIDTH/2+HOFFSET, WINDOW_HEIGHT/2)
+ON_LEFT = (screen.get_width()/2-HOFFSET, screen.get_height()/2)
+ON_RIGHT = (screen.get_width()/2+HOFFSET, screen.get_height()/2)
 
 ## Those positions are then stored in arrays so they may be shuffled (randomized).
 onscreen_positions = [ON_LEFT, ON_RIGHT]

@@ -9,10 +9,11 @@ import random
 import pygame
 from time import time
 from pygame.locals import *
+from kelpy.KelpyScreen import *
 
 
 ## Some global variables we care about
-screen, clock, WINDOW_WIDTH, WINDOW_HEIGHT = [None]*4
+screen, clock = [None]*2
 
 OFFSCREEN = [-10000, -10000]
 
@@ -25,10 +26,9 @@ SPACEBAR_CHANGE_EVENT = pygame.USEREVENT + 0x1 # called by our main loop when sp
 def is_space_pressed(): return pygame.key.get_pressed()[K_SPACE]
 SPACEBAR_NOHOLD_EVENT = pygame.USEREVENT + 0x2 # called by our main loop whenever the spacebar is NOT held down
 NULL_EVENT            = pygame.USEREVENT + 0x3
-
 ZONE_EVENT            = pygame.USEREVENT + 0x4
-
 EXIT_KELPY_STANDARD_EVENT_LOOP            = pygame.USEREVENT + 0x5 # this event is for exiting loops, after completing some queue event
+KELPY_USER_EVENT      = pygame.USEREVENT + 0x6
 
 #pygame.mixer.pre_init(44100,-16,2, 1024 * 3) # sometimes we get scratchy sound -- use this from http://archives.seul.org/pygame/users/Oct-2003/msg00076.html
 def ifelse(x,y,z):
@@ -114,23 +114,30 @@ def loop_till_key(key=K_RETURN):
 				if event.type == KEYDOWN and event.key == K_ESCAPE: quit()
 
 
-def play_sound(sound, wait=False, volume=0.9):
-	#snd = pygame.mixer.Sound( sound )
-	#snd.set_volume( volume )
-	#snd.play()
-					
-	pygame.mixer.music.load(sound)
-	pygame.mixer.music.set_volume(volume)
-	pygame.mixer.music.play()
-	
-	if wait:
-		while pygame.mixer.music.get_busy(): pass
-		
-		
+def play_sound(sound, wait=False, volume=0.65):
+    """ 
+    Simplifies the pygame sound module into a single function for playing sounds.
+    
+    Set wait to true to tell the program to wait until the sound if finished to continue.
+    This may fix problems where the program ends before a sound finishes playing, and makes it seem like the sound
+    hasn't started playing at all.
+    
+    volume sets the volume, between 0.0 and 1.0 
+    """
+    #snd = pygame.mixer.Sound( sound )
+    #snd.set_volume( volume )
+    pygame.mixer.music.load(sound)
+    pygame.mixer.music.set_volume(volume)
+    pygame.mixer.music.play()
+    if wait:
+        while pygame.mixer.music.get_busy(): pass
+        
+
+
 def initialize_kelpy(dimensions=(1024,768), bg=(250,250,250), fullscreen=False):
 	"""
 		Calls a bunch of pygame functions to set up the screen, etc. 
-		- Fullscreen - if true, we override the dimensions
+		- Fullscreen - if true, we override the dimensions.
 	"""
 	
 	global background_color # change the up-one-level variable
@@ -138,9 +145,10 @@ def initialize_kelpy(dimensions=(1024,768), bg=(250,250,250), fullscreen=False):
 	
 	pygame.init()
 	
-	if fullscreen: screen = pygame.display.set_mode( (0,0), pygame.FULLSCREEN)
-	else:          screen = pygame.display.set_mode(dimensions)
-	
+	if fullscreen: 
+		screen = pygame.display.set_mode( (0,0), pygame.FULLSCREEN)
+	else:
+		screen = pygame.display.set_mode(dimensions)
 	clock = pygame.time.Clock()
 	
 	## And load our icon
@@ -151,6 +159,9 @@ def initialize_kelpy(dimensions=(1024,768), bg=(250,250,250), fullscreen=False):
 	if not pygame.font: print 'Warning, fonts disabled'
 	if not pygame.mixer: print 'Warning, sound disabled'
 	
+	#kelpy_screen = KelpyScreen(screen)
+	#return kelpy_screen
+
 	return screen
 	
 def clear_screen(screen):
@@ -210,11 +221,44 @@ def kelpy_standard_event_loop(screen, *args, **kwargs):
 			else: a.update() # love you, duck typing XXOO
 
 def filename( inputFilepath ):
+	"""
+		This function returns the filename when passed a full filepath.
+	"""
 	return inputFilepath.rsplit('/', 1)[1]
 
 			
-			
-			
-			
-			
-			
+class Spots():
+	"""
+		This class can be used to call offscreen and onscreen spots to position things on a screen.
+		It is used by the following code:
+		screen = initialize_kelpy( dimensions=(800,600) )  ## INITIALIZE THE SCREEN OBJECT...
+		spots = Spots(screen)   ## FEED THE SCREEN OBJECT TO THE SPOTS OBJECT...
+		print spots.west	## YOU CAN NOW CALL THE POSITIONS FROM THE OBJECT AS ATTRIBUTES! YAY!
+	"""
+	def __init__(self, screen):
+		self.west = (-screen.get_height(),  screen.get_width() /2 )
+		self.northwest = ( -screen.get_height(), -screen.get_width() )
+		self.north = ( screen.get_width()/2, -screen.get_height() )
+		self.northeast = ( screen.get_width() *2, -screen.get_height() )
+		self.east = ( screen.get_width() * 2, screen.get_height()/2 )
+		self.southeast= ( screen.get_width() * 2, screen.get_height() * 2 )
+		self.south = ( screen.get_width()/2 , screen.get_height() * 2 )
+		self.southwest = ( -screen.get_width(), screen.get_height()*2 )
+		self.center = (screen.get_width()/2, screen.get_height()/2 ) 
+		
+		self.topq1 = ((screen.get_width()/5) * 1, (screen.get_height()/5)*2 )
+		self.topq2 = ((screen.get_width()/5) * 2, (screen.get_height()/5)*2 )
+		self.topq3 = ((screen.get_width()/5) * 3, (screen.get_height()/5)*2)
+		self.topq4 = ((screen.get_width()/5) * 4, (screen.get_height()/5)*2 )
+		
+		self.middleq1 = ((screen.get_width()/5) * 1, (screen.get_height()/5)*3 )
+		self.middleq2 = ((screen.get_width()/5) * 2, (screen.get_height()/5)*3 )
+		self.middleq3 = ((screen.get_width()/5) * 3, (screen.get_height()/5)*3 )
+		self.middleq4 = ((screen.get_width()/5) * 4, (screen.get_height()/5)*3 )
+		
+		self.bottomq1 = ((screen.get_width()/5) * 1, (screen.get_height()/5)*4 )
+		self.bottomq2 = ((screen.get_width()/5) * 2, (screen.get_height()/5)*4 )
+		self.bottomq3 = ((screen.get_width()/5) * 3, (screen.get_height()/5)*4 )
+		self.bottomq4 = ((screen.get_width()/5) * 4, (screen.get_height()/5)*4 )
+
+		self.center = ((screen.get_width() /2 ), (screen.get_height() /2 ) )
