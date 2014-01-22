@@ -3,20 +3,22 @@
 from CommandableImageSprite import *
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# This extends CommandableImageSprites so that they are now aware of the eye tracker
+# This extends CommandableImageSprites so that they interact with the Tobii eyetracker
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
 class TobiiSprite(CommandableImageSprite):
 	def __init__(self, screen, init_position, imagepath, tobii_controller, **kwargs):
 		""" 
-		Create a new object.
-		
-		pass all the given values to CommandableImageSprite init()
+		same args as CommandableImageSprite except for --
+
+		tobii_controller: 
+		a TobiiController object which is a wrapper for the Tobii SDK
 		"""
+		
 		self.tobii_controller = tobii_controller
-		self.last_look_timepoint = -1
-		self.total_look_time = 0
+		self.last_look_timepoint = -1 #stores the latest timestamp that this sprite was looked at
+		self.total_look_time = 0 #stores the cumulative looking time for this sprite
 		
-		
+		# call parent init
 		CommandableImageSprite.__init__(self, screen, init_position, imagepath, **kwargs)
 		
 		
@@ -38,20 +40,15 @@ class TobiiSprite(CommandableImageSprite):
 		
 	def get_look_time(self):
 		""" 
-		Reports current duration of looking time in milliseconds (for a trial?)
+		Reports current duration of looking time in milliseconds
 		
 		"""
 		return self.total_look_time
-		
-	#def reset_look_time(self):
-	#	""" Resets total look duration to 0 -- useful for start of a new trial
-	#	
-	#	"""
-	#	self.total_look_time = 0
 	
 	def update_action(self, **c):
 		"""
-		Actions specific to TobiiSprites
+		Actions specific to TobiiSprites -- nothing really so far except for 'follow' which
+		is just a test action
 		"""
 		# try updating as a parent -- this defines self.start_x, self.start_y
 		if CommandableSprite.update_action(self, **c): return True
@@ -74,7 +71,8 @@ class TobiiSprite(CommandableImageSprite):
 		
 	def update(self):
 		"""
-		Updates looking state and cumulative looking time
+		Updates looking state and cumulative looking time -- a pretty rough way to determine
+		looking time currently
 		"""
 		#add additional time between now and last timepoint if I was being looked at
 		if self.is_looked_at():

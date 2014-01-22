@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
-# Tobii controller
-# original version (for psychopy) authors: Hiroyuki Sogo, Horea Christian
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Tobii controller for kelpy
+# original author: Hiroyuki Sogo, modified by Horea Christian (for psychopy)
 # modified for kelpy by Amanda Yung
+# original version: https://github.com/TheChymera/E2att/blob/1c09a0d46b6627346bafba60739329c626d759ce/letobii.py
 # - Tobii SDK 3.0 is required
 #
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 from tobii.eye_tracking_io.basic import EyetrackerException
 
@@ -62,8 +65,6 @@ class TobiiController:
         return False
         
     def destroy(self):
-	if self.datafile is not None:
-		self.close_data_file()
         self.eyetracker = None
         self.browser.stop()
         self.browser = None
@@ -124,7 +125,7 @@ class TobiiController:
 	"""
 	Returns left x,y and right x,y positions in screen coordinates.
 	Since Tobii uses normalized units, need to multiply by screen size. 
-	This assumes that the kelpy window is fullsized.
+	This assumes that the kelpy window is fullsized; may need to change this for future versions?
 		
 	"""
     	# Verify that the gaze data is valid, otherwise reject it.
@@ -182,6 +183,7 @@ class TobiiController:
 	else:
 	    return int((gaze_point[0] + gaze_point[2])/2), int((gaze_point[1] + gaze_point[3])/2)
     
+
     #pre-existing data writing methods; adjusted slightly for validity codes
     def set_data_file(self,filename):
         print 'set datafile ' + filename
