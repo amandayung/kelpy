@@ -5,10 +5,16 @@
 # original author: Hiroyuki Sogo, modified by Horea Christian (for psychopy)
 # modified for kelpy by Amanda Yung
 # original version: https://github.com/TheChymera/E2att/blob/1c09a0d46b6627346bafba60739329c626d759ce/letobii.py
-# - Tobii SDK 3.0 is required
+#
+# *** Tobii SDK 3.0 is required. Get it at:
+# http://www.tobii.com/en/eye-tracking-research/global/landingpages/analysis-sdk-30
+# Also add it to your PYTHONPATH environment variable. The 'tobii' package is located in:
+# tobiisdk/python27/modules
+#
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+#the 'tobii' here is the tobii sdk package
 from tobii.eye_tracking_io.basic import EyetrackerException
 
 import os

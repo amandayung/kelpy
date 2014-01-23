@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from CommandableImageSprite import *
+from kelpy.CommandableImageSprite import *
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This extends CommandableImageSprites so that they interact with the Tobii eyetracker
